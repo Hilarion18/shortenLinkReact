@@ -9,7 +9,8 @@ class HomeComponent extends Component {
     super(props);
     this.state = {
       date: new Date(),
-      links: []
+      link: "",
+      links: [],
     };
   }
 
@@ -17,6 +18,10 @@ class HomeComponent extends Component {
     this.getLinkDatas()
   }
 
+  handleChange(event) {
+    this.setState({ link: event.target.value });
+  }
+  
   getLinkDatas = async () => {
     axios({
       method: 'GET',
@@ -34,7 +39,8 @@ class HomeComponent extends Component {
       })
   }
 
-  handleAddLink = () => {
+  handleAddLink() {
+    console.log(`this.state.link`, this.state.link)
     axios({
       method: 'POST',
       url: `${config.port}/link`,
@@ -58,7 +64,7 @@ class HomeComponent extends Component {
   }
 
   removeAllLinks = () => {
-    if (this.isLogin) {
+    // if (this.isLogin) {
       axios({
         method: `DELETE`,
         url: `${config.port}/link`,
@@ -73,9 +79,9 @@ class HomeComponent extends Component {
         .catch((err) => {
           alert(err.message)
         })
-    } else {
-      this.state.links = []
-    }
+    // } else {
+    //   this.state.links = []
+    // }
   }
 
   renderListItem = () => {
@@ -87,7 +93,7 @@ class HomeComponent extends Component {
             <td className="text-left td">
               <div className="row">
                 <input type="hidden" id="get-link" value={val.shortUrl}/>
-                <a className="copy-link" href="" onClick={this.copyToClipboard}>{val.shortUrl}</a>
+                  <a className="copy-link" href="" onClick={this.copyToClipboard}>{val.shortUrl}</a>
                 <div className="text-cursor">click to copy this link</div>
               </div>
               {
@@ -131,7 +137,7 @@ class HomeComponent extends Component {
         <div className="scope-input row">
           <div className="col input-link">
             <input
-              v-model="link.longUrl"
+              onChange={this.handleChange} 
               type="urlLink"
               className="form-control"
               aria-describedby="urlLink"
@@ -146,7 +152,7 @@ class HomeComponent extends Component {
           <div className="container home-content">
             <div className="row">
               <h5 className="text-left">Previously shortened by you</h5>
-              {/* <a href="" className="clear-history" onClick={this.removeAllLinks}>Clear history</a> */}
+              <a href="" className="clear-history" onClick={this.removeAllLinks}>Clear history</a>
             </div>
             <table className="item-table">
               <thead>
