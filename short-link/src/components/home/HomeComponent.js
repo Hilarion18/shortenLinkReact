@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-// import logo from '../../logo.svg';
 import axios from 'axios'
 import config from '../../config.js'
 import LinkTableData from './component/LinkTableData'
-// import styles from './style/HomeComponentStyle.css.js'
+import './style/HomeComponentStyle.css'
 
 class HomeComponent extends Component {
   constructor(props) {
@@ -61,16 +60,11 @@ class HomeComponent extends Component {
     })
       .then((res) => {
         this.getLinkDatas()
-        // this.setState({
-        //   link: {
-        //     longUrl: ''
-        //   }
-        // })
       })
       .catch((err) => {
         console.log(`err`, err.message)
-        // alert(err.message)
-        alert('there is something wrong, please try again later')
+        alert(err.message)
+        // alert('there is something wrong, please try again later')
       })
   }
 
@@ -144,7 +138,7 @@ class HomeComponent extends Component {
   render() {
     return (
       <div className="App">
-        <div className="scope-input row">
+        <div className="row">
           <div className="col input-link">
             <input
               onChange={this.handleChange} 
