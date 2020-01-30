@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-// import logo from '../../logo.svg';
 import axios from 'axios'
 import config from '../../config.js'
-// import styles from './style/HomeComponentStyle.css.js'
+import LinkTableData from './component/LinkTableData'
+import './style/HomeComponentStyle.css'
 
 class HomeComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       date: new Date(),
-      links: []
+      links: [],
+      link: {
+        longUrl: '',
+      },
     };
   }
 
@@ -17,6 +20,12 @@ class HomeComponent extends Component {
     this.getLinkDatas()
   }
 
+  handleChange = (event) => {
+    this.setState({ link: {
+      longUrl: event.target.value 
+    }})
+  }
+  
   getLinkDatas = async () => {
     axios({
       method: 'GET',
@@ -25,47 +34,114 @@ class HomeComponent extends Component {
       }
     })
       .then((value) => {
-        this.links = value.data.data
-        console.log(`this.links`, this.links)
+        this.setState({
+          links: value.data.data
+        })
       })
       .catch((err) => {
         alert(err.message)
       })
   }
 
-
-
-  handleSubmit = () => {
-
+  handleAddLink = (val) => {
+    val.preventDefault();
+    this.setState({
+      link: {
+        longUrl: ''
+      }
+    });
+    axios({
+      method: 'POST',
+      url: `${config.port}/link`,
+      data: this.state.link,
+      // headers: {
+      //   token: localStorage.getItem("token")
+      // },
+    })
+      .then((res) => {
+        this.getLinkDatas()
+      })
+      .catch((err) => {
+        console.log(`err`, err.message)
+        alert(err.message)
+        // alert('there is something wrong, please try again later')
+      })
   }
 
   removeAllLinks = () => {
-
+    // if (this.isLogin) {
+      axios({
+        method: `DELETE`,
+        url: `${config.port}/link`,
+        headers: {
+          // id: localStorage.get('userId'),
+          // token: localStorage.getItem('token')
+        }
+      })
+        .then((value) => {
+          // this.links = []
+        })
+        .catch((err) => {
+          alert(err.message)
+        })
+    // } else {
+    //   this.state.links = []
+    // }
   }
 
   renderListItem = () => {
     return (
-      <ul>
-        {
+      // <div>
+        // {
           this.state.links.map((val, index) => 
-            // return (
-              <li key={index}>
-                { val.shortUrl }
-              </li>
-            // );
+          <tr key={index}>
+            <td className="text-left td">
+              <div className="row">
+                <input type="hidden" id="get-link" value={val.shortUrl}/>
+                <a className="copy-link" href="/#" onClick={this.copyToClipboard}>{val.shortUrl}</a>
+                <div className="text-cursor">click to copy this link</div>
+              </div>
+              {
+                (50 < val.longUrl.length)
+                ? <a>{val.longUrl}</a>
+                : <a>{ val.longUrl.substring(0,50)+"..." }</a>
+              }
+            </td>
+            <td className="visit">will be update soon</td>
+            <td className="last-visited">will be update soon</td>
+          </tr>
           )
-        }
-      </ul>
+        // }
+      // </div>
     )
+  }
+
+  copyToClipboard() {
+    let testingCodeToCopy = document.querySelector('#get-link')
+    testingCodeToCopy.setAttribute('type', 'text')    // 不是 hidden 才能複製
+    testingCodeToCopy.select()
+    let item = document.getElementById('get-link').value
+
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      alert(`your url ${item} has been copied ` + msg);
+    } catch (err) {
+      alert('Oops, unable to copy');
+    }
+
+    /* unselect the range */
+    testingCodeToCopy.setAttribute('type', 'hidden')
+    window.getSelection().removeAllRanges()
   }
 
   render() {
     return (
       <div className="App">
-        <div className="scope-input row">
+        <div className="row">
           <div className="col input-link">
             <input
-              v-model="link.longUrl"
+              onChange={this.handleChange} 
               type="urlLink"
               className="form-control"
               aria-describedby="urlLink"
@@ -73,14 +149,14 @@ class HomeComponent extends Component {
             />
           </div>
           <div className="col col-button">
-            <button className="button button--winona button--border-thin button--round-s" data-text="generate link" onClick={this.handleSubmit}><span>generate link</span></button>
+            <button className="button button--winona button--border-thin button--round-s" data-text="generate link" onClick={this.handleAddLink}><span>generate link</span></button>
           </div>
         </div>
         {/* <header className="App-header"> */}
           <div className="container home-content">
             <div className="row">
               <h5 className="text-left">Previously shortened by you</h5>
-              <a href="" className="clear-history" onClick={this.removeAllLinks}>Clear history</a>
+              <a href="/#" className="clear-history" onClick={this.removeAllLinks}>Clear history</a>
             </div>
             <table className="item-table">
               <thead>
@@ -90,27 +166,6 @@ class HomeComponent extends Component {
               </thead>
               <tbody  >
                 {this.renderListItem()}
-                {/* { (this.state.links && 0 < this.state.links.length)
-                  ? this.state.links.map((item, index) => {
-                    return (
-                      <h1>{item.shortUrl}</h1>
-                    )}
-                  )
-                  : null
-                } */}
-                {/* <tr :key="index" v-for="(link , index) in links">
-                  <td className="text-left td">
-                    <div className="row">
-                      <input type="hidden" id="get-link" :value="link.shortUrl">
-                      <a className="copy-link" href="" @click.stop.prevent="copyToClipboard">{{link.shortUrl}}</a>
-                      <div className="text-cursor">click to copy this link</div>
-                    </div>
-                    <a className="long-url" v-if="link.longUrl.length<50">{{link.longUrl}}</a>
-                    <a v-else>{{ link.longUrl.substring(0,50)+"..." }}</a>
-                  </td>
-                  <td className="visit">will be update soon</td>
-                  <td className="last-visited">will be update soon</td>
-                </tr> */}
               </tbody>
             </table>
           </div>
