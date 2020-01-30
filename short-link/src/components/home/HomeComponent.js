@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import logo from '../../logo.svg';
 import axios from 'axios'
 import config from '../../config.js'
+import LinkTableData from './component/LinkTableData'
 // import styles from './style/HomeComponentStyle.css.js'
 
 class HomeComponent extends Component {
@@ -9,8 +10,10 @@ class HomeComponent extends Component {
     super(props);
     this.state = {
       date: new Date(),
-      link: "",
       links: [],
+      link: {
+        longUrl: '',
+      },
     };
   }
 
@@ -18,8 +21,10 @@ class HomeComponent extends Component {
     this.getLinkDatas()
   }
 
-  handleChange(event) {
-    this.setState({ link: event.target.value });
+  handleChange = (event) => {
+    this.setState({ link: {
+      longUrl: event.target.value 
+    }})
   }
   
   getLinkDatas = async () => {
@@ -39,25 +44,31 @@ class HomeComponent extends Component {
       })
   }
 
-  handleAddLink() {
-    console.log(`this.state.link`, this.state.link)
+  handleAddLink = (val) => {
+    val.preventDefault();
+    this.setState({
+      link: {
+        longUrl: ''
+      }
+    });
     axios({
       method: 'POST',
       url: `${config.port}/link`,
       data: this.state.link,
-      headers: {
-        token: localStorage.getItem("token")
-      }
+      // headers: {
+      //   token: localStorage.getItem("token")
+      // },
     })
-      .then((result) => {
-        // if (this.isLogin) {
-        //   this.getLinkData()
-        // } else {
-          this.getLinkData()
-          this.links.push(result.data.data)
-        // }
+      .then((res) => {
+        this.getLinkDatas()
+        // this.setState({
+        //   link: {
+        //     longUrl: ''
+        //   }
+        // })
       })
       .catch((err) => {
+        console.log(`err`, err.message)
         // alert(err.message)
         alert('there is something wrong, please try again later')
       })
@@ -86,14 +97,14 @@ class HomeComponent extends Component {
 
   renderListItem = () => {
     return (
-      <ul>
-        {
+      // <div>
+        // {
           this.state.links.map((val, index) => 
-          <tr>
+          <tr key={index}>
             <td className="text-left td">
               <div className="row">
                 <input type="hidden" id="get-link" value={val.shortUrl}/>
-                  <a className="copy-link" href="" onClick={this.copyToClipboard}>{val.shortUrl}</a>
+                <a className="copy-link" href="/#" onClick={this.copyToClipboard}>{val.shortUrl}</a>
                 <div className="text-cursor">click to copy this link</div>
               </div>
               {
@@ -106,8 +117,8 @@ class HomeComponent extends Component {
             <td className="last-visited">will be update soon</td>
           </tr>
           )
-        }
-      </ul>
+        // }
+      // </div>
     )
   }
 
@@ -116,7 +127,6 @@ class HomeComponent extends Component {
     testingCodeToCopy.setAttribute('type', 'text')    // 不是 hidden 才能複製
     testingCodeToCopy.select()
     let item = document.getElementById('get-link').value
-    console.log(`item`, item)
 
     try {
       var successful = document.execCommand('copy');
@@ -152,7 +162,7 @@ class HomeComponent extends Component {
           <div className="container home-content">
             <div className="row">
               <h5 className="text-left">Previously shortened by you</h5>
-              <a href="" className="clear-history" onClick={this.removeAllLinks}>Clear history</a>
+              <a href="/#" className="clear-history" onClick={this.removeAllLinks}>Clear history</a>
             </div>
             <table className="item-table">
               <thead>
