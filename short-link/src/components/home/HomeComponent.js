@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import config from '../../config.js'
-import LinkTableData from './component/LinkTableData'
+// import LinkTableData from './component/LinkTableData'
 import './style/HomeComponentStyle.css'
 
 class HomeComponent extends Component {
@@ -33,9 +33,9 @@ class HomeComponent extends Component {
       headers: {
       }
     })
-      .then((value) => {
+      .then((res) => {
         this.setState({
-          links: value.data.data
+          links: res.data.data
         })
       })
       .catch((err) => {
@@ -54,71 +54,58 @@ class HomeComponent extends Component {
       method: 'POST',
       url: `${config.port}/link`,
       data: this.state.link,
-      // headers: {
-      //   token: localStorage.getItem("token")
-      // },
     })
       .then((res) => {
         this.getLinkDatas()
+        this.setState({ link: {
+          longUrl: ""
+        }})
       })
       .catch((err) => {
-        console.log(`err`, err.message)
-        alert(err.message)
-        // alert('there is something wrong, please try again later')
+        // alert(err.message)
+        alert(`There is something wrong, please insert the url or use the right url "http://.." not "www" and check your network`)
       })
   }
 
   removeAllLinks = () => {
-    // if (this.isLogin) {
       axios({
         method: `DELETE`,
         url: `${config.port}/link`,
-        headers: {
-          // id: localStorage.get('userId'),
-          // token: localStorage.getItem('token')
-        }
       })
         .then((value) => {
-          // this.links = []
+          this.getLinkDatas()
         })
         .catch((err) => {
           alert(err.message)
         })
-    // } else {
-    //   this.state.links = []
-    // }
   }
 
   renderListItem = () => {
     return (
-      // <div>
-        // {
-          this.state.links.map((val, index) => 
-          <tr key={index}>
-            <td className="text-left td">
-              <div className="row">
-                <input type="hidden" id="get-link" value={val.shortUrl}/>
-                <a className="copy-link" href="/#" onClick={this.copyToClipboard}>{val.shortUrl}</a>
-                <div className="text-cursor">click to copy this link</div>
-              </div>
-              {
-                (50 < val.longUrl.length)
-                ? <a>{val.longUrl}</a>
-                : <a>{ val.longUrl.substring(0,50)+"..." }</a>
-              }
-            </td>
-            <td className="visit">will be update soon</td>
-            <td className="last-visited">will be update soon</td>
-          </tr>
-          )
-        // }
-      // </div>
+      this.state.links.map((val, index) => 
+      <tr key={index}>
+        <td className="text-left td">
+          <div className="row">
+            <input type="hidden" id="get-link" value={val.shortUrl}/>
+            <a className="copy-link" href="/#" onClick={this.copyToClipboard}>{val.shortUrl}</a>
+            <div className="text-cursor">click to copy this link</div>
+          </div>
+          {
+            (50 < val.longUrl.length)
+            ? <a>{ val.longUrl.substring(0,50)+"..." }</a>
+            : <a>{val.longUrl}</a>
+          }
+        </td>
+        <td className="visit">will be update soon</td>
+        <td className="last-visited">will be update soon</td>
+      </tr>
+      )
     )
   }
 
   copyToClipboard() {
     let testingCodeToCopy = document.querySelector('#get-link')
-    testingCodeToCopy.setAttribute('type', 'text')    // 不是 hidden 才能複製
+    testingCodeToCopy.setAttribute('type', 'text')
     testingCodeToCopy.select()
     let item = document.getElementById('get-link').value
 
@@ -140,13 +127,16 @@ class HomeComponent extends Component {
       <div className="App">
         <div className="row">
           <div className="col input-link">
-            <input
-              onChange={this.handleChange} 
-              type="urlLink"
-              className="form-control"
-              aria-describedby="urlLink"
-              placeholder="put your link here...."
-            />
+            <form>
+              <input
+                value={this.state.link.longUrl}
+                onChange={this.handleChange} 
+                type="urlLink"
+                className="form-control"
+                aria-describedby="urlLink"
+                placeholder="put your link here...."
+              />
+            </form>
           </div>
           <div className="col col-button">
             <button className="button button--winona button--border-thin button--round-s" data-text="generate link" onClick={this.handleAddLink}><span>generate link</span></button>

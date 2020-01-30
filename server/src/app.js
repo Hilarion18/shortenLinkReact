@@ -15,13 +15,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/api', indexRouter);
-// console.log(`process.env`, process.env)
 
-// mongoose.connect('mongodb://localhost:27017/shortLink', { useNewUrlParser: true, useUnifiedTopology: true })
+// mongoose.connect(process.env.DB_MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  // console.log('mongo connected')
+  console.log('mongoDB connected')
 })
 
 var mongodUri = `mongodb://${process.env.MLAB_USER}:${process.env.MLAB_PASS}@ds151943.mlab.com:51943/short_link`

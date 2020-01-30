@@ -15,7 +15,6 @@ class LinkTableData extends Component {
   }
 
   componentDidMount() {
-    console.log(`this.props`, this.props)
     this.props.getLinkDatas()
   }
 
