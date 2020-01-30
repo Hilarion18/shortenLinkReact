@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import config from '../../config.js'
-import LinkTableData from './component/LinkTableData'
+// import LinkTableData from './component/LinkTableData'
 import './style/HomeComponentStyle.css'
 
 class HomeComponent extends Component {
@@ -54,65 +54,48 @@ class HomeComponent extends Component {
       method: 'POST',
       url: `${config.port}/link`,
       data: this.state.link,
-      // headers: {
-      //   token: localStorage.getItem("token")
-      // },
     })
       .then((res) => {
         this.getLinkDatas()
       })
       .catch((err) => {
-        console.log(`err`, err.message)
         alert(err.message)
-        // alert('there is something wrong, please try again later')
       })
   }
 
   removeAllLinks = () => {
-    // if (this.isLogin) {
       axios({
         method: `DELETE`,
         url: `${config.port}/link`,
-        headers: {
-          // id: localStorage.get('userId'),
-          // token: localStorage.getItem('token')
-        }
       })
         .then((value) => {
-          // this.links = []
+          this.getLinkDatas()
         })
         .catch((err) => {
           alert(err.message)
         })
-    // } else {
-    //   this.state.links = []
-    // }
   }
 
   renderListItem = () => {
     return (
-      // <div>
-        // {
-          this.state.links.map((val, index) => 
-          <tr key={index}>
-            <td className="text-left td">
-              <div className="row">
-                <input type="hidden" id="get-link" value={val.shortUrl}/>
-                <a className="copy-link" href="/#" onClick={this.copyToClipboard}>{val.shortUrl}</a>
-                <div className="text-cursor">click to copy this link</div>
-              </div>
-              {
-                (50 < val.longUrl.length)
-                ? <a>{val.longUrl}</a>
-                : <a>{ val.longUrl.substring(0,50)+"..." }</a>
-              }
-            </td>
-            <td className="visit">will be update soon</td>
-            <td className="last-visited">will be update soon</td>
-          </tr>
-          )
-        // }
-      // </div>
+      this.state.links.map((val, index) => 
+      <tr key={index}>
+        <td className="text-left td">
+          <div className="row">
+            <input type="hidden" id="get-link" value={val.shortUrl}/>
+            <a className="copy-link" href="/#" onClick={this.copyToClipboard}>{val.shortUrl}</a>
+            <div className="text-cursor">click to copy this link</div>
+          </div>
+          {
+            (50 < val.longUrl.length)
+            ? <a>{ val.longUrl.substring(0,50)+"..." }</a>
+            : <a>{val.longUrl}</a>
+          }
+        </td>
+        <td className="visit">will be update soon</td>
+        <td className="last-visited">will be update soon</td>
+      </tr>
+      )
     )
   }
 

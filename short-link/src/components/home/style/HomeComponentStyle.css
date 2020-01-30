@@ -14,9 +14,10 @@
   }
   .first-th {
     text-align: left;
-    width: 418px;
+    width: 500px;
   }
   .th {
+    text-align: center;
     width: 161px;
   }
   .long-url {
