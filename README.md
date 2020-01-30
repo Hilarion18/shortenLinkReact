@@ -40,4 +40,10 @@ usually your browser will use port `3001`
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-**Note: this is a under development and already in MVP, if you want to contribute request to us and you'll get the .env**
+**Note: this is a MVP and under development, if you want to contribute request us and we'll give you the .env**
+
+
+<!-- Markdown link & img dfn's -->
+[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
+[wiki]: https://github.com/yourname/yourproject/wiki
