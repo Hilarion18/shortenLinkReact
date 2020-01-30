@@ -33,9 +33,9 @@ class HomeComponent extends Component {
       headers: {
       }
     })
-      .then((value) => {
+      .then((res) => {
         this.setState({
-          links: value.data.data
+          links: res.data.data
         })
       })
       .catch((err) => {
@@ -57,9 +57,13 @@ class HomeComponent extends Component {
     })
       .then((res) => {
         this.getLinkDatas()
+        this.setState({ link: {
+          longUrl: ""
+        }})
       })
       .catch((err) => {
-        alert(err.message)
+        // alert(err.message)
+        alert(`There is something wrong, please insert the url or use the right url "http://.." not "www" and check your network`)
       })
   }
 
@@ -101,7 +105,7 @@ class HomeComponent extends Component {
 
   copyToClipboard() {
     let testingCodeToCopy = document.querySelector('#get-link')
-    testingCodeToCopy.setAttribute('type', 'text')    // 不是 hidden 才能複製
+    testingCodeToCopy.setAttribute('type', 'text')
     testingCodeToCopy.select()
     let item = document.getElementById('get-link').value
 
@@ -123,13 +127,16 @@ class HomeComponent extends Component {
       <div className="App">
         <div className="row">
           <div className="col input-link">
-            <input
-              onChange={this.handleChange} 
-              type="urlLink"
-              className="form-control"
-              aria-describedby="urlLink"
-              placeholder="put your link here...."
-            />
+            <form>
+              <input
+                value={this.state.link.longUrl}
+                onChange={this.handleChange} 
+                type="urlLink"
+                className="form-control"
+                aria-describedby="urlLink"
+                placeholder="put your link here...."
+              />
+            </form>
           </div>
           <div className="col col-button">
             <button className="button button--winona button--border-thin button--round-s" data-text="generate link" onClick={this.handleAddLink}><span>generate link</span></button>

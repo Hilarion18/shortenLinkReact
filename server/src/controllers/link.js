@@ -26,37 +26,46 @@ module.exports = {
         })
       }
       if (results) {
-          const result = JSON.parse(results)
-          if (result.status_code === 200) {
+        const result = JSON.parse(results)
+        if (result.status_code === 200) {
           let linkData = new Link ({
             longUrl: req.body.longUrl,
             shortUrl: result.data.url,
             hashed: result.data.hash
           })
           linkData.save()
-          .then((data) => {
-            res.status(201).json({
-              data,
-              message: `get links`
+            .then((data) => {
+              res.status(201).json({
+                data,
+                message: `get links`
+              })
             })
-          })
-          .catch((err) => {
-            res.status(500).json({
-              err,
-              message: `data failure to get`
+            .catch((err) => {
+              res.status(500).json({
+                err,
+                message: `data failure to get`
+              })
             })
-          })
-        } else if (result.status_code === 500) {
-          const msg = result.status_txt
-          res.status(result.status_code).json({
-            msg,
-            message: `wrong url`
-          })
-        } else {
-          res.status(result.status_code).json({
-            message: `there is something wrong with connection`
-          })
-        }
+          } else if (result.status_code === 500) {
+            let msg = result.status_txt
+            if (msg = 'MISSING_ARG_URI') {
+              res.status(500).json({
+                message: `please insert the url`
+              })
+            } else if (msg = "INVALID_URI") {
+              res.status(500).json({
+                message: `wrong url`
+              })
+            } else {
+              res.status(500).json({
+                msg,
+              })
+            }
+          } else {
+              res.status(result.status_code).json({
+              message: `there is something wrong with connection`
+            })
+          }
       }
     });
   },
