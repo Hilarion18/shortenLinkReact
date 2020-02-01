@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.head-page {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  font-family: Montserrat;
+  font-size: 47px;
+  color: #EB4A42;
+  text-decoration: underline;
+}
