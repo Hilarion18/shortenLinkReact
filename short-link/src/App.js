@@ -8,8 +8,14 @@ class App extends Component {
     return (
     <Router>
         <div className="container">
-          <h2 className="head-page">Welcome to shorten-link</h2>
-          <a>The link shortener with a long name</a>
+          <div className="d-flex justify-content-between">
+            <div className="head-page">
+              Welcome to shorten-link
+            </div>
+            <div className="head-page2">
+              The link shortener with a long name
+            </div>
+          </div>
           <Switch>
               <Route exact path='/' component={Home} />
           </Switch>

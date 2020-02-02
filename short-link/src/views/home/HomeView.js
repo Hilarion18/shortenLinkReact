@@ -14,6 +14,7 @@ class HomeComponent extends Component {
       link: {
         longUrl: '',
       },
+      isTyping: false,
     };
   }
 
@@ -22,9 +23,17 @@ class HomeComponent extends Component {
   }
 
   handleChange = (event) => {
-    this.setState({ link: {
-      longUrl: event.target.value 
-    }})
+    this.setState({
+      link: {
+        longUrl: event.target.value 
+      },
+      isTyping: true
+    })
+    if (event.target.value === '') {
+      this.setState({
+        isTyping: false
+      })
+    }
   }
   
   getLinkDatas = async () => {
@@ -58,9 +67,12 @@ class HomeComponent extends Component {
     })
       .then((res) => {
         this.getLinkDatas()
-        this.setState({ link: {
-          longUrl: ""
-        }})
+        this.setState({
+          link: {
+            longUrl: ""
+          },
+          isTyping: false
+        })
       })
       .catch((err) => {
         // alert(err.message)
@@ -81,6 +93,27 @@ class HomeComponent extends Component {
         })
   }
 
+  copyToClipboard(val) {
+    const item = document.createElement('textarea')
+    item.value = val
+    item.setAttribute('type', 'text')
+    document.body.appendChild(item)
+    item.select()
+    document.execCommand('copy');
+    document.body.removeChild(item);
+
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      alert(`your url ${val} has been copied ` + msg);
+    } catch (err) {
+      alert('Oops, unable to copy');
+    }
+
+    /* unselect the range */
+    window.getSelection().removeAllRanges()
+  }
+
   renderListItem = () => {
     return (
       this.state.links.map((val, index) => 
@@ -88,13 +121,16 @@ class HomeComponent extends Component {
         <td className="text-left td">
           <div className="row">
             <input type="hidden" id="get-link" value={val.shortUrl}/>
-            <a className="copy-link" href="/#" onClick={this.copyToClipboard}>{val.shortUrl}</a>
+            <div onClick={() => this.copyToClipboard(val.shortUrl)}>
+              <a className="short-link" href="/#" >bit.ly/</a>
+              <a className="copy-link" href="/#" >{val.hashed}</a>
+            </div>
             <div className="text-cursor">click to copy this link</div>
           </div>
           {
             (50 < val.longUrl.length)
-            ? <a>{ val.longUrl.substring(0,50)+"..." }</a>
-            : <a>{val.longUrl}</a>
+            ? <div className="td-content">{ val.longUrl.substring(0,50)+"..." }</div>
+            : <div className="td-content">{val.longUrl}</div>
           }
         </td>
         <td className="visit">will be update soon</td>
@@ -104,28 +140,9 @@ class HomeComponent extends Component {
     )
   }
 
-  copyToClipboard() {
-    let testingCodeToCopy = document.querySelector('#get-link')
-    testingCodeToCopy.setAttribute('type', 'text')
-    testingCodeToCopy.select()
-    let item = document.getElementById('get-link').value
-
-    try {
-      var successful = document.execCommand('copy');
-      var msg = successful ? 'successful' : 'unsuccessful';
-      alert(`your url ${item} has been copied ` + msg);
-    } catch (err) {
-      alert('Oops, unable to copy');
-    }
-
-    /* unselect the range */
-    testingCodeToCopy.setAttribute('type', 'hidden')
-    window.getSelection().removeAllRanges()
-  }
-
   render() {
     return (
-      <div className="App">
+      <div>
         <div className="row">
           <div className="col input-link">
             <form>
@@ -135,39 +152,45 @@ class HomeComponent extends Component {
                 type="urlLink"
                 className="form-control"
                 aria-describedby="urlLink"
-                placeholder="put your link here...."
+                placeholder="Paste the link you want to shorten here"
               />
             </form>
           </div>
-          <div className="col col-button">
-            <button className="button button--winona button--border-thin button--round-s" data-text="generate link" onClick={this.handleAddLink}><span>generate link</span></button>
-          </div>
+          { 
+            this.state.isTyping
+            ? <div className="col">
+                <button className="button2 button--winona button--border-thin button--round-s" data-text="Shorten this link" onClick={this.handleAddLink}><span>Shorten this link</span></button>
+              </div>
+            : <div className="col">
+                <button className="button button--winona button--border-thin button--round-s" data-text="Shorten this link" onClick={this.handleAddLink}><span>Shorten this link</span></button>
+              </div>
+          }
         </div>
-        {/* <LinkTableData/> */}
-          <div className="container home-content">
-            <div className="row">
-              <h5 className="text-left">Previously shortened by you</h5>
+        <div className="home-content">
+          <div className="d-flex justify-content">
+            <div className="">
+              Previously shortened by you
+            </div>
+            <div className="clear-history">
               <a href="/#" className="clear-history" onClick={this.removeAllLinks}>Clear history</a>
             </div>
-            <table className="item-table">
-              <thead>
-                <tr className="th-scoped">
-                  <th className="first-th" max-length="50">Link</th>
-                  <th className="th">Visits</th>
-                  <th className="th">Last Visited</th>
-                </tr>
-              </thead>
-              <tbody  >
-                {this.renderListItem()}
-              </tbody>
-            </table>
           </div>
+          <table className="item-table">
+            <thead>
+              <tr className="th-scoped">
+                <th className="first-th" max-length="50">LINK</th>
+                <th className="th">VISITS</th>
+                <th className="th">LAST VISITED</th>
+              </tr>
+            </thead>
+            <tbody  >
+              {this.renderListItem()}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
 }
-
-// const rootElement = document.getElementById("root");
-// ReactDOM.render(<HomeComponent />, rootElement);
 
 export default HomeComponent
