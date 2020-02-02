@@ -2,6 +2,7 @@ import Link from '../models/link'
 import Bitly from '../helpers/hashLink'
 
 module.exports = {
+  // 
   getLinks: (req,res) => {
     Link.find({})
     .then((data) => {
@@ -27,6 +28,7 @@ module.exports = {
       }
       if (results) {
         const result = JSON.parse(results)
+        // if post status success from bit.ly API
         if (result.status_code === 200) {
           let linkData = new Link ({
             longUrl: req.body.longUrl,
@@ -47,15 +49,18 @@ module.exports = {
               })
             })
           } else if (result.status_code === 500) {
+            // if no url request
             let msg = result.status_txt
             if (msg = 'MISSING_ARG_URI') {
               res.status(500).json({
                 message: `please insert the url`
               })
+              // if url is invalid
             } else if (msg = "INVALID_URI") {
               res.status(500).json({
                 message: `wrong url`
               })
+              // else 500 response from bit.ly API
             } else {
               res.status(500).json({
                 msg,
@@ -69,37 +74,19 @@ module.exports = {
       }
     });
   },
-  deleteOne: (req,res) => {
-    Link.findOne({ _id: req.params.id})
-    .then((link) => {
-      
-        Link.deleteOne({_id: req.params.id})
-        .then((result) => {
-            res.status(200).json({
-                result,
-                message: `Link detail has been deleted`
-            })
-        })
-    })
-    .catch((err) => {
-        res.status(500).json({
-          err,
-            message: `Link failed to delete`
-        })
-    })
-  },
+  // to delete all posted link
   deleteAll: (req,res) => {
     Link.remove({})
       .then((data) => {
         res.status(200).json({
           data,
-          message: `all data has been removed`
+          message: `all link has been removed`
         })
       })
       .catch((err) => {
         res.status(500).json({
           err,
-          message: `data failure to remove`
+          message: `links failure to remove`
         })
       })
   }

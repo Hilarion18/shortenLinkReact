@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+.head-page {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  font-family: Montserrat;
+  font-size: 47px;
+  color: #EB4A42;
+  text-decoration: underline;
+}
+
+/* @import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=latin,latin-ext,greek-ext,greek,vietnamese,cyrillic,cyrillic-ext); */
+
+.head-page2 {
+  margin-top: 46px;
+  margin-bottom: 30px;
+  font-family: roboto;
+  font-weight: 100;
+  font-size: 22px;
+  color: #AAAAAA;
+}
+
+.container {
+  padding-right: 100px;
+  padding-left: 100px;
+}
