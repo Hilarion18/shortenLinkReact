@@ -4,7 +4,7 @@
 }
 
 .form-control {
-  width: 730px;
+  width: 710px;
   color: #AAAAAA;
   background-color: #EAEAEA;
 }
@@ -177,10 +177,6 @@
   min-width: 10px;
   width: 20px;
   max-width: 20px;
-}
-.copy-link {
-  /* padding-left: 15px; */
-  /* padding-bottom: 15px; */
 }
 .text-cursor {
   display: none;
