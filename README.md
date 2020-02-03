@@ -1,6 +1,6 @@
 # Shorten Link
 
-> Short blurb about what your product does.
+> Short blurb about what our product does.
 
 [![Build Status][travis-image]][travis-url]
 
